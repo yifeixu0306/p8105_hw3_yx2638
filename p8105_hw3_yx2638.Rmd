@@ -95,3 +95,13 @@ instacart %>%
 ```{r}
 accel = read_csv("data/accel_data.csv") 
 ```
+
+#### Tidy and wrangle the data
+
+```{r}
+accel_tidy = accel %>%
+        janitor::clean_names() %>%
+        pivot_longer(activity_1:activity_1440, names_to = "minute", values_to = "activity_counts", names_prefix =  "activity_") %>%
+        mutate(weekday_vs_weekend = ifelse(day %in% c("Saturday", "Sunday"), "weekend", "weekday")) %>%
+        mutate(minute = as.integer(minute)) 
+```
