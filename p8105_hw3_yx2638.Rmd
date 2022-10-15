@@ -115,9 +115,23 @@ The resulting dataset contains `r nrow(accel_tidy)` observations. `r ncol(accel_
 ```{r}
 # aggregate across minutes to create a total activity variable for each day, and create a table showing these totals
 accel_tidy %>%
-        group_by(day, week) %>%
+        group_by(week, day) %>%
         summarize(total_activity_counts = sum(activity_counts)) %>%
         knitr::kable()
 ```
 
+The trend is not apparent. However, it's obvious that the total activity accounts on Saturdays in week 4 and week 5 is far lower than any other days.
+
+#### Make a single-panel plot that shows the 24-hour activity time courses for each day
+
+```{r}
+accel_tidy %>%
+        group_by(day, minute) %>%
+        ggplot(aes(x = minute, y = activity_counts)) +
+        geom_point(aes(color = day), alpha = 0.6) +
+        scale_x_continuous(
+                breaks = c(0, 180, 360, 540, 720, 900, 1080, 1260, 1440),
+                labels = c("0hr", "3hr", "6hr", "9hr", "12hr", "3hr", "6hr", "9hr", "12hr")) + 
+        labs(x = "Hour", y = "Activity Counts", title = "24-hour Activity Time Courses for Each Day")
+```
 
