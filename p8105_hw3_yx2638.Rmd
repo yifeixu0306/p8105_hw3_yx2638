@@ -167,6 +167,12 @@ ny_noaa_tidy = ny_noaa %>%
         mutate(year = as.numeric(year),
                month = month.name[as.numeric(month)],
                day = as.numeric(day)) %>%
-        mutate(prcp = prcp/10, tmax = tmax/10, tmin = tmin/10)
-
+        mutate(prcp = as.numeric(prcp)/10,
+               tmax = as.numeric(tmax)/10,
+               tmin = as.numeric(tmin)/10)
 ```
+
+`NY NOAA` collected weather data all New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations. Key variables inlude `r names(ny_noaa_tidy)`. The unit for precipitation, snowfall and snow depth is unified as "mm", while the unit for maximum temperature `tmax` and minimum temperature `tmin` which maximum temperature and minimum temperature is both "degrees C". 
+
+Each weather station may only collect a subset of these variables, which can lead to problems with missing data in the dataset. Missing data occurs in precipitation, snowfall, snow depth, maximum temperature and minimum temperature, accounting for `r scales::percent(sum(is.na(ny_noaa_tidy$prcp)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$snow)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$snwd)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$tmax)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$tmin)) / nrow(ny_noaa_tidy), 0.01)`respectively. 
+
