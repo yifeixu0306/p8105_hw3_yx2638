@@ -192,18 +192,26 @@ For snowfall, the most commonly observed value is 0. This is because snowfall is
 
 ```{r}
 # Show the average max temperature in January and in July in each station across years
-ny_noaa_tidy %>%
+Jan_Jul = ny_noaa_tidy %>%
         filter(month %in% c("January", "July")) %>%
+        drop_na(tmax) %>%
         group_by(id, year, month) %>%
-        summarize(avg_tmax = mean(tmax)) %>%
+        summarize(avg_tmax = mean(tmax))
+
+
+Jan_Jul %>%
         ggplot(aes(x = year, y = avg_tmax)) + 
         geom_point() + 
+        geom_smooth() +
         facet_grid(. ~ month) +
         labs(x = "Year",
              y = "Average Max Temperature (C)",
              title = "Average Max Temperature in January and July Across Years",
              caption = "These data were accessed from the NOAA National Climatic Data Center.
-             Each point represents the average max temperature of a station at the given time")
+             Each point represents the average max temperature of a station at the given time") +
+        theme(plot.title = element_text(size = 12)) +
+        theme(axis.title = element_text(size = 10)) +
+        theme(axis.text = element_text(size = 10))
 
 ```
 
