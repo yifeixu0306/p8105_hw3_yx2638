@@ -103,5 +103,21 @@ accel_tidy = accel %>%
         janitor::clean_names() %>%
         pivot_longer(activity_1:activity_1440, names_to = "minute", values_to = "activity_counts", names_prefix =  "activity_") %>%
         mutate(weekday_vs_weekend = ifelse(day %in% c("Saturday", "Sunday"), "weekend", "weekday")) %>%
+        mutate(day = day %>% 
+                       fct_relevel("Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday", "Sunday")) %>% 
         mutate(minute = as.integer(minute)) 
 ```
+
+The resulting dataset contains `r nrow(accel_tidy)` observations. `r ncol(accel_tidy)` key variables include `r names(accel_tidy)`. Each observation represent a male's activity count per minute of each day during five weeks.
+
+#### Create a table to show the total activity counts
+
+```{r}
+# aggregate across minutes to create a total activity variable for each day, and create a table showing these totals
+accel_tidy %>%
+        group_by(day, week) %>%
+        summarize(total_activity_counts = sum(activity_counts)) %>%
+        knitr::kable()
+```
+
+
