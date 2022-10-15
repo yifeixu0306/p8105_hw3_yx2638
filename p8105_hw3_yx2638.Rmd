@@ -134,4 +134,8 @@ accel_tidy %>%
                 labels = c("0hr", "3hr", "6hr", "9hr", "12hr", "3hr", "6hr", "9hr", "12hr")) + 
         labs(x = "Hour", y = "Activity Counts", title = "24-hour Activity Time Courses for Each Day")
 ```
+For most of the time, the activity count for every minute throughout the day is less than 2500.
 
+We can observe that the activity count of this male is low between 12am and 6am, and then begins to increase. Around 9am, the activity count reaches the first peak. The second peak occurs around 9pm, after which the activity account begins to decline. Within weekday, his activity count is relatively high around 7am on some Thursdays and around 9am on some Fridays. As for the weekend, the activity count is high in the afternoon. 
+
+From this plot, we can roughly identify his daily schedule (such as the time of wake-up and sleep).
