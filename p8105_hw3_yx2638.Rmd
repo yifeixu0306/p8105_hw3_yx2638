@@ -222,29 +222,33 @@ In addition, outliers exist in both January and July, which are some abnormally 
 #### Make another two-panel plot
 
 ```{r}
-# show tmax vs tmin for the full dataset
+# (i) show tmax vs tmin for the full dataset
 tmax_tmin = ny_noaa_tidy %>%
         ggplot(aes(x = tmin, y = tmax)) +
-        geom_point() + 
+        geom_hex() + 
         labs(x = "Minimum Temperature (C)", 
              y = "Maximum Temperature (C)",
-             title = "Comparison of Max and Min Temperature") 
-       
+             title = "Comparison of Max and Min Temperature") +
+        theme(plot.title = element_text(size = 12)) +
+        theme(axis.title = element_text(size = 10)) +
+        theme(axis.text = element_text(size = 10)) +
+        theme(legend.text = element_text(size = 5))
 
-# show the distribution of snowfall values greater than 0 and less than 100 separately by year
+
+# (ii) show the distribution of snowfall values greater than 0 and less than 100 separately by year
 snow_dist = ny_noaa_tidy %>%
         filter(snow < 100 & snow > 0) %>%
         ggplot(aes(x = snow, y = as.factor(year))) +
-        geom_density_ridges() + 
-        labs(x = "Snowfall Values",
+        geom_density_ridges(scale = 0.85) + 
+        labs(x = "Snowfall Values (mm)",
              y = "Year",
-             title = "Distribution of Snowfall Values") 
+             title = "Distribution of Snowfall Values") +
+        theme(plot.title = element_text(size = 12)) +
+        theme(axis.title = element_text(size = 10)) +
+        theme(axis.text = element_text(size = 10))
 
 # patch these two plots
-tmax_tmin / snow_dist 
-    
-   
+tmax_tmin + snow_dist 
 ```
-
 
 
