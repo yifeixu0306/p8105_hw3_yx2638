@@ -154,8 +154,19 @@ From this plot, we can roughly identify his daily schedule (such as the time of 
 data("ny_noaa")
 
 ny_noaa = 
-  ny_noaa %>% 
-  as_tibble(ny_noaa)
+      ny_noaa %>% 
+      as_tibble(ny_noaa)
 ```
 
+#### Tidy and wrangle the data
 
+```{r}
+ny_noaa_tidy = ny_noaa %>%
+        janitor::clean_names() %>%
+        separate(date, into = c("year", "month", "day")) %>%
+        mutate(year = as.numeric(year),
+               month = month.name[as.numeric(month)],
+               day = as.numeric(day)) %>%
+        mutate(prcp = prcp/10, tmax = tmax/10, tmin = tmin/10)
+
+```
