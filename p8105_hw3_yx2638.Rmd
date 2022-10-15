@@ -182,6 +182,30 @@ Each weather station may only collect a subset of these variables, which can lea
 ny_noaa_tidy %>%
         group_by(snow) %>%
         summarize(num = n()) %>%
-        arrange(num)
+        arrange(desc(num))
 
 ```
+
+For snowfall, the most commonly observed value is 0. This is because snowfall is an infrequent occurrence in New York state. It does not snow for most of the time throughout the whole year due to the geographical location.
+
+#### Make a two-panel plot showing the average max temperature
+
+```{r}
+# Show the average max temperature in January and in July in each station across years
+ny_noaa_tidy %>%
+        filter(month %in% c("January", "July")) %>%
+        group_by(id, year, month) %>%
+        summarize(avg_tmax = mean(tmax)) %>%
+        ggplot(aes(x = year, y = avg_tmax)) + 
+        geom_point() + 
+        facet_grid(. ~ month) +
+        labs(x = "Year",
+             y = "Average Max Temperature (C)",
+             title = "Average Max Temperature in January and July Across Years",
+             caption = "These data were accessed from the NOAA National Climatic Data Center.
+             Each point represents the average max temperature of a station at the given time")
+
+```
+
+
+In addition, outliers exist in both January and July, which are some abnormally extreme low temperature. 
