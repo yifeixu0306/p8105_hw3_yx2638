@@ -87,3 +87,11 @@ instacart %>%
   spread(key = order_dow, value = mean_hour) %>%
   knitr::kable(digits = 2)
 ```
+
+# Problem 2
+
+#### Read in the data 
+
+```{r}
+accel = read_csv("data/accel_data.csv") 
+```
