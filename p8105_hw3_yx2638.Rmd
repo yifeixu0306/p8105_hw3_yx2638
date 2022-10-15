@@ -145,3 +145,17 @@ Within a day, we can observe that the activity count of this male is very low be
 Within weekday, his activity count is relatively high around 7am on some Thursdays and around 9am on some Fridays. As for the weekend, the activity count is high in the afternoon, especially around 4-5pm on Saturday and around 12pm on Sunday. Between 8-10pm, the count is usually high across many days, especially on Friday.
 
 From this plot, we can roughly identify his daily schedule (such as the time of wake-up and sleep).
+
+# Problem 3
+
+#### Read in the data
+
+```{r}
+data("ny_noaa")
+
+ny_noaa = 
+  ny_noaa %>% 
+  as_tibble(ny_noaa)
+```
+
+
