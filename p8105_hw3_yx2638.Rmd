@@ -129,22 +129,22 @@ We cannot observe apparent trend from the table. However, it's obvious that the 
 accel_tidy %>%
         group_by(day, minute) %>%
         ggplot(aes(x = minute, y = activity_counts)) +
-        geom_point(aes(color = day), alpha = 0.5) +
+        geom_point(aes(color = day), alpha = 0.6) +
         scale_color_brewer(palette = "Set1") +
         geom_smooth() + 
         scale_x_continuous(
                 breaks = c(0, 180, 360, 540, 720, 900, 1080, 1260, 1440),
                 labels = c("12am", "3am", "6am", "9am", "12pm", "3pm", "6pm", "9pm", "12am")) + 
-        labs(x = "Time", 
-             y = "Activity Counts", 
-             title = "24-hour Activity Time Courses for Each Day")
+        labs(x = "Time", y = "Activity Counts", title = "24-hour Activity Time Courses for Each Day")
 ```
 
-Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9-12w wwwam, the activity count reaches the first peak, after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity account begins to decline.
+Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9am, the activity count reaches the first peak, after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity account begins to decline.
 
 Within weekday, his activity count is relatively high around 7am on some Thursdays and around 9am on some Fridays. As for the weekend, the activity count is high in the afternoon, especially around 4-5pm on Saturday and around 12pm on Sunday. Between 8-10pm, the count is usually high across many days, especially on Friday.
 
+
 From this plot, we can roughly identify his daily schedule (such as the time of wake-up and sleep).
+
 
 # Problem 3
 
@@ -154,8 +154,8 @@ From this plot, we can roughly identify his daily schedule (such as the time of 
 data("ny_noaa")
 
 ny_noaa = 
-      ny_noaa %>% 
-      as_tibble(ny_noaa)
+  ny_noaa %>% 
+  as_tibble(ny_noaa)
 ```
 
 #### Tidy and wrangle the data
@@ -170,11 +170,13 @@ ny_noaa_tidy = ny_noaa %>%
         mutate(prcp = as.numeric(prcp)/10,
                tmax = as.numeric(tmax)/10,
                tmin = as.numeric(tmin)/10)
+
 ```
 
 `NY NOAA` collected weather data all New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations, with `r ncol(ny_noaa_tidy)` key variables, inluding `r names(ny_noaa_tidy)`. The unit for precipitation, snowfall and snow depth is unified as "mm", while the unit for maximum temperature `tmax` and minimum temperature `tmin` which maximum temperature and minimum temperature is both "degrees C". 
 
-Each weather station may only collect a subset of these variables, which can lead to problems with missing data in the dataset. Missing data occurs in precipitation, snowfall, snow depth, maximum temperature and minimum temperature, accounting for `r sum(is.na(ny_noaa_tidy$prcp) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snow) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snwd) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$tmax) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)` and `r sum(is.na(ny_noaa_tidy$tmin) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, respectively. We cannot ignore this issue due to the large proportion. The sample is not very representative and the results of our analysis might be less convincing
+Each weather station may only collect a subset of these variables, which can lead to problems with missing data in the dataset. Missing data occurs in precipitation, snowfall, snow depth, maximum temperature and minimum temperature, accounting for `r sum(is.na(ny_noaa_tidy$prcp) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snow) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snwd) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$tmax) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)` and `r sum(is.na(ny_noaa_tidy$tmin) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, respectively. We cannot ignore this issue due to the large proportion. The sample is not very representative and the results of our analysis might be less convincing.
+
 
 #### Identify the most commonly observed values for snowfall
 
@@ -185,8 +187,8 @@ ny_noaa_tidy %>%
         arrange(desc(num))
 
 ```
-
 For snowfall, the most commonly observed value is 0. This is because snowfall is an infrequent occurrence in New York state. It does not snow for most of the time throughout the whole year due to the geographical location.
+
 
 #### Make a two-panel plot showing the average max temperature
 
@@ -212,12 +214,14 @@ Jan_Jul %>%
         theme(plot.title = element_text(size = 12)) +
         theme(axis.title = element_text(size = 10)) +
         theme(axis.text = element_text(size = 10))
-
+        
 
 ```
-From the two-panel plot, we can intuitively see that the average max temperature in January is much slower than that in July. The average max temperature in January fluctuates greatly across years while in July, the average max temperature is relatively stable across years. From my point of view, that extreme weather often occurs in January might account for the pattern.
+
+From the two-panel plot, we can intuitively see that the average max temperature in January is much slower than that in July. As is known to all, New York is New York is in the northern hemisphere and January is still winter and is much colder than July, which is in summer. The average max temperature in January fluctuates greatly across years while in July, the average max temperature is relatively stable across years. From my point of view, that extreme weather often occurs in January might account for the pattern.
 
 In addition, outliers exist in both January and July, which are some abnormally extreme low temperature. 
+
 
 #### Make another two-panel plot
 
@@ -249,6 +253,11 @@ snow_dist = ny_noaa_tidy %>%
 
 # patch these two plots
 tmax_tmin + snow_dist 
+    
+   
 ```
+
+From this 2-panel plot, we can observe that the maximal and minimal temperature may have a positive correlation and the temperature is around 0 to 25 degrees C for most of the time. The distribution of snowfall values (0-100mm) is quite similar across the years.
+
 
 
