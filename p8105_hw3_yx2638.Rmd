@@ -172,7 +172,16 @@ ny_noaa_tidy = ny_noaa %>%
                tmin = as.numeric(tmin)/10)
 ```
 
-`NY NOAA` collected weather data all New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations. Key variables inlude `r names(ny_noaa_tidy)`. The unit for precipitation, snowfall and snow depth is unified as "mm", while the unit for maximum temperature `tmax` and minimum temperature `tmin` which maximum temperature and minimum temperature is both "degrees C". 
+`NY NOAA` collected weather data all New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations, with `r ncol(ny_noaa_tidy)` key variables, inluding `r names(ny_noaa_tidy)`. The unit for precipitation, snowfall and snow depth is unified as "mm", while the unit for maximum temperature `tmax` and minimum temperature `tmin` which maximum temperature and minimum temperature is both "degrees C". 
 
-Each weather station may only collect a subset of these variables, which can lead to problems with missing data in the dataset. Missing data occurs in precipitation, snowfall, snow depth, maximum temperature and minimum temperature, accounting for `r scales::percent(sum(is.na(ny_noaa_tidy$prcp)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$snow)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$snwd)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$tmax)) / nrow(ny_noaa_tidy), 0.01)`, `r scales::percent(sum(is.na(ny_noaa_tidy$tmin)) / nrow(ny_noaa_tidy), 0.01)`respectively. 
+Each weather station may only collect a subset of these variables, which can lead to problems with missing data in the dataset. Missing data occurs in precipitation, snowfall, snow depth, maximum temperature and minimum temperature, accounting for `r sum(is.na(ny_noaa_tidy$prcp) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snow) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snwd) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$tmax) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)` and `r sum(is.na(ny_noaa_tidy$tmin) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, respectively. We cannot ignore this issue due to the large proportion. The sample is not very representative and the results of our analysis might be less convincing
 
+#### Identify the most commonly observed values for snowfall
+
+```{r}
+ny_noaa_tidy %>%
+        group_by(snow) %>%
+        summarize(num = n()) %>%
+        arrange(num)
+
+```
