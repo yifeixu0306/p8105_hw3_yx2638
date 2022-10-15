@@ -102,13 +102,14 @@ accel = read_csv("data/accel_data.csv")
 accel_tidy = accel %>%
         janitor::clean_names() %>%
         pivot_longer(activity_1:activity_1440, names_to = "minute", values_to = "activity_counts", names_prefix =  "activity_") %>%
-        mutate(weekday_vs_weekend = ifelse(day %in% c("Saturday", "Sunday"), "weekend", "weekday")) %>%
         mutate(day = day %>% 
                        fct_relevel("Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday", "Sunday")) %>% 
+        mutate(weekday_vs_weekend = ifelse(day %in% c("Saturday", "Sunday"), "weekend", "weekday")) %>%
         mutate(minute = as.integer(minute)) 
 ```
 
 The resulting dataset contains `r nrow(accel_tidy)` observations. `r ncol(accel_tidy)` key variables include `r names(accel_tidy)`. Each observation represent a male's activity count per minute of each day during five weeks.
+
 
 #### Create a table to show the total activity counts
 
@@ -120,7 +121,7 @@ accel_tidy %>%
         knitr::kable()
 ```
 
-The trend is not apparent. However, it's obvious that the total activity accounts on Saturdays in week 4 and week 5 is far lower than any other days.
+We cannot observe apparent trend from the table. However, it's obvious that the total activity accounts on Saturdays in week 4 and week 5 is far lower than any other days.
 
 #### Make a single-panel plot that shows the 24-hour activity time courses for each day
 
@@ -128,14 +129,19 @@ The trend is not apparent. However, it's obvious that the total activity account
 accel_tidy %>%
         group_by(day, minute) %>%
         ggplot(aes(x = minute, y = activity_counts)) +
-        geom_point(aes(color = day), alpha = 0.6) +
+        geom_point(aes(color = day), alpha = 0.5) +
+        scale_color_brewer(palette = "Set1") +
+        geom_smooth() + 
         scale_x_continuous(
                 breaks = c(0, 180, 360, 540, 720, 900, 1080, 1260, 1440),
-                labels = c("0hr", "3hr", "6hr", "9hr", "12hr", "3hr", "6hr", "9hr", "12hr")) + 
-        labs(x = "Hour", y = "Activity Counts", title = "24-hour Activity Time Courses for Each Day")
+                labels = c("12am", "3am", "6am", "9am", "12pm", "3pm", "6pm", "9pm", "12am")) + 
+        labs(x = "Time", 
+             y = "Activity Counts", 
+             title = "24-hour Activity Time Courses for Each Day")
 ```
-For most of the time, the activity count for every minute throughout the day is less than 2500.
 
-We can observe that the activity count of this male is low between 12am and 6am, and then begins to increase. Around 9am, the activity count reaches the first peak. The second peak occurs around 9pm, after which the activity account begins to decline. Within weekday, his activity count is relatively high around 7am on some Thursdays and around 9am on some Fridays. As for the weekend, the activity count is high in the afternoon. 
+Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9-12w wwwam, the activity count reaches the first peak, after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity account begins to decline.
+
+Within weekday, his activity count is relatively high around 7am on some Thursdays and around 9am on some Fridays. As for the weekend, the activity count is high in the afternoon, especially around 4-5pm on Saturday and around 12pm on Sunday. Between 8-10pm, the count is usually high across many days, especially on Friday.
 
 From this plot, we can roughly identify his daily schedule (such as the time of wake-up and sleep).
