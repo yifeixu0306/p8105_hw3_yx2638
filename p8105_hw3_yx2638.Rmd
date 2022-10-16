@@ -69,7 +69,9 @@ instacart %>%
 
 In total, there are 134 aisles, with fresh vegetables and fresh fruits holding the most items ordered by far. The plot shows the number of items ordered in each aisle and aisles are ordered by ascending number of items.
 
-#### Make a table showing the three most popular items in each of the aisles and order times
+#### Make a table 
+
+showing the three most popular items in each of the aisles and order times
 
 ```{r}
 instacart %>% 
@@ -82,7 +84,9 @@ instacart %>%
         knitr::kable()
 ```
 
-#### Show the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered
+#### Make a table 
+
+showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered
 
 ```{r}
 instacart %>%
@@ -109,7 +113,10 @@ accel = read_csv("data/accel_data.csv")
 ```{r, message=FALSE}
 accel_tidy = accel %>%
         janitor::clean_names() %>%
-        pivot_longer(activity_1:activity_1440, names_to = "minute", values_to = "activity_counts", names_prefix =  "activity_") %>%
+        pivot_longer(activity_1:activity_1440, 
+                     names_to = "minute", 
+                     values_to = "activity_counts", 
+                     names_prefix =  "activity_") %>%
         mutate(day = day %>% 
                        fct_relevel("Monday", "Tuesday", "Wednesday","Thursday","Friday", "Saturday", "Sunday")) %>% 
         mutate(weekday_vs_weekend = ifelse(day %in% c("Saturday", "Sunday"), "weekend", "weekday")) %>%
@@ -125,9 +132,10 @@ The resulting dataset contains `r nrow(accel_tidy)` observations. `r ncol(accel_
 # aggregate across minutes to create a total activity variable for each day, and create a table showing these totals
 accel_tidy %>%
         group_by(week, day) %>%
+        rename(Week = week) %>%
         summarize(total_activity_counts = sum(activity_counts)) %>%
-        knitr::kable(align = "c", format = "pipe",
-                     col.names = c("Week","Day","Total Activity Count"))
+        spread(key = day, total_activity_counts) %>%
+        knitr::kable(digits = 0)
 ```
 
 We cannot observe apparent trend from the table. However, it's obvious that the total activity accounts on Saturdays in week 4 and week 5 is far lower than any other days.
@@ -150,10 +158,9 @@ accel_tidy %>%
              title = "24-hour Activity Time Courses for Each Day")
 ```
 
-Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9am, the activity count reaches the first peak, after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity account begins to decline.
+Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9-12am, the activity count reaches the first peak, after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity account begins to decline.
 
 Within weekday, his activity count is relatively high around 7am on some Thursdays and around 9am on some Fridays. As for the weekend, the activity count is high in the afternoon, especially around 4-5pm on Saturday and around 12pm on Sunday. Between 8-10pm, the count is usually high across many days, especially on Friday.
-
 
 From this plot, we can roughly identify his daily schedule (such as the time of wake-up and sleep).
 
