@@ -31,6 +31,18 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
+# Problem 1
+
+#### Read in the data
+
+```{r, message=FALSE}
+data("instacart")
+
+instacart = 
+        instacart %>% 
+        as_tibble(instacart)
+```
+
 
 # Problem 2
 
