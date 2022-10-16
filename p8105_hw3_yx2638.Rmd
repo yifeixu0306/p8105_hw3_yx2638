@@ -138,7 +138,7 @@ accel_tidy %>%
         knitr::kable(digits = 0)
 ```
 
-We cannot observe apparent trend from the table. However, compared with weekends, total activity counts are more stable during weekdays and it's obvious that the total activity accounts on Saturdays in week 4 and week 5 are far lower than any other days. 
+We cannot observe apparent trend from the table. However, compared with weekends, total activity counts are more stable during weekdays and it's obvious that the total activity counts on Saturdays in week 4 and week 5 are far lower than any other days. 
 
 #### Make a single-panel plot that shows the 24-hour activity time courses for each day
 
@@ -159,7 +159,7 @@ accel_tidy %>%
 ```
 
 
-Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9-12am, the activity count reaches the first peak, and after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity account begins to decline.
+Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9-12am, the activity count reaches the first peak, and after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity count begins to decline.
 
 Within weekday, his activity count is relatively high around 7am on some Thursdays and around 9am on some Fridays. As for the weekend, the activity count is high in the afternoon, especially around 4-5pm on Saturday and around 12pm on Sunday. Between 8-10pm, the count is usually high across many days, especially on Friday.
 
@@ -194,7 +194,7 @@ ny_noaa_tidy = ny_noaa %>%
 
 ```
 
-`NY NOAA` collected weather data all New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations, with `r ncol(ny_noaa_tidy)` key variables, including `r names(ny_noaa_tidy)`. 
+`NY NOAA` collected weather data from New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations, with `r ncol(ny_noaa_tidy)` key variables, including `r names(ny_noaa_tidy)`. 
 
 The `id` is a `r class(ny_noaa_tidy$id)` variable. We separate the date into `year`, `month` and `day`, which are `r class(ny_noaa_tidy$year)`, `r class(ny_noaa_tidy$month)`, `r class(ny_noaa_tidy$day)` variable, respectively. `prcp`, `snow`, `snwd`, `tmax`, `tmin` are unified as `r class(ny_noaa_tidy$prcp)` variables after data cleaning. The unit for precipitation, snowfall and snow depth is unified as "mm", while the unit for maximum temperature `tmax` and minimum temperature `tmin` is both "degrees C".
 
