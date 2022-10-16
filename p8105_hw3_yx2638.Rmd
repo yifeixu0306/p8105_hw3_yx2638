@@ -233,7 +233,7 @@ Jan_Jul %>%
         labs(x = "Year",
              y = "Average Max Temperature (C)",
              title = "Average Max Temperature in January and July Across Years",
-             caption = "Data from the rnoaa package.
+             caption = "Data from the noaa package.
              Each point represents the average max temperature of a station at the given time") +
         theme(plot.title = element_text(size = 12)) +
         theme(axis.title = element_text(size = 10)) +
@@ -272,7 +272,7 @@ snow_dist = ny_noaa_tidy %>%
         labs(x = "Snowfall Values (mm)",
              y = "Year",
              title = "Distribution of Snowfall Values",
-             caption = "Data from the rnoaa package") +
+             caption = "Data from the noaa package") +
         theme(plot.title = element_text(size = 12)) +
         theme(axis.title = element_text(size = 10)) +
         theme(axis.text = element_text(size = 10))
