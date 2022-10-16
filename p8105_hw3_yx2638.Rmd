@@ -69,6 +69,19 @@ instacart %>%
 
 In total, there are 134 aisles, with fresh vegetables and fresh fruits holding the most items ordered by far. The plot shows the number of items ordered in each aisle and aisles are ordered by ascending number of items.
 
+#### Make a table showing the three most popular items in each of the aisles and order times
+
+```{r}
+instacart %>% 
+        filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>%
+        group_by(aisle) %>% 
+        count(product_name) %>% 
+        mutate(rank = min_rank(desc(n))) %>% 
+        filter(rank < 4) %>% 
+        arrange(desc(n)) %>%
+        knitr::kable()
+```
+
 
 # Problem 2
 
