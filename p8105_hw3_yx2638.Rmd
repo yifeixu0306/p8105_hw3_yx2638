@@ -43,6 +43,11 @@ instacart =
         as_tibble(instacart)
 ```
 
+#### Answer questions about the data
+
+The dataset `instacart` contains `r nrow(instacart)` rows and each row respresents a single product from an instacart order. `r ncol(instacart)` variables include identifiers for user, order, and product; the order in which each product was added to the cart. There are several order-level variables, describing the day and time of the order, and number of days since prior order. Then there are several item-specific variables, describing the product name (e.g. Yogurt, Avocado), department (e.g. dairy and eggs, produce), and aisle (e.g. yogurt, fresh fruits), and whether the item has been ordered by this user in the past. 
+
+In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
 
 # Problem 2
 
