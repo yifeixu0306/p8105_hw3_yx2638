@@ -49,6 +49,27 @@ The dataset `instacart` contains `r nrow(instacart)` rows and each row respresen
 
 In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
 
+#### Make a plot that shows the number of items ordered in each aisle
+
+```{r}
+instacart %>% 
+        count(aisle) %>% 
+        arrange(desc(n))
+
+instacart %>% 
+        count(aisle) %>% 
+        filter(n > 10000) %>% 
+        mutate(aisle = fct_reorder(aisle, n)) %>% 
+        ggplot(aes(x = aisle, y = n)) + 
+        geom_point() + 
+        labs(title = "Number of items ordered in each aisle") +
+        theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+```
+
+In total, there are 134 aisles, with fresh vegetables and fresh fruits holding the most items ordered by far. The plot shows the number of items ordered in each aisle and aisles are ordered by ascending number of items.
+
+
 # Problem 2
 
 #### Read in the data 
