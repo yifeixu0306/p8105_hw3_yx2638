@@ -31,74 +31,18 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-# Problem 1
-
-```{r}
-# load the "Instacart" data from the "p8105.datasets"
-data("instacart")
-
-instacart = 
-  instacart %>% 
-  as_tibble(instacart)
-```
-
-The dataset `instacart` contains `r nrow(instacart)` rows and `r ncol(instacart)` columns, with each row resprenting a single product from an instacart order. Variables include identifiers for user, order, and product; the order in which each product was added to the cart. There are several order-level variables, describing the day and time of the order, and number of days since prior order. Then there are several item-specific variables, describing the product name (e.g. Yogurt, Avocado), department (e.g. dairy and eggs, produce), and aisle (e.g. yogurt, fresh fruits), and whether the item has been ordered by this user in the past. In total, there are `r instacart %>% select(product_id) %>% distinct %>% count` products found in `r instacart %>% select(user_id, order_id) %>% distinct %>% count` orders from `r instacart %>% select(user_id) %>% distinct %>% count` distinct users.
-
-
-```{r}
-# summarize the number of items ordered from aisle
-instacart %>% 
-  count(aisle) %>% 
-  arrange(desc(n))
-```
-In total, there are 134 aisles, with fresh vegetables and fresh fruits holding the most items ordered by far.
-
-```{r}
-# plot the number of items ordered in each aisle
-instacart %>% 
-  count(aisle) %>% 
-  filter(n > 10000) %>% 
-  mutate(aisle = fct_reorder(aisle, n)) %>% 
-  ggplot(aes(x = aisle, y = n)) + 
-  geom_point() + 
-  labs(title = "Number of items ordered in each aisle") +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1)) 
-
-```
-
-```{r}
-# Show the three most popular items in aisles `baking ingredients`, ` dog food care`, and `packaged vegetables fruits`,and include the number of times each item is ordered 
-instacart %>% 
-  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>%
-  group_by(aisle) %>% 
-  count(product_name) %>% 
-  mutate(rank = min_rank(desc(n))) %>% 
-  filter(rank < 4) %>% 
-  arrange(desc(n)) %>%
-  knitr::kable()
-```
-
-```{r}
-# show the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week
-instacart %>%
-  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>%
-  group_by(product_name, order_dow) %>%
-  summarize(mean_hour = mean(order_hour_of_day)) %>%
-  spread(key = order_dow, value = mean_hour) %>%
-  knitr::kable(digits = 2)
-```
 
 # Problem 2
 
 #### Read in the data 
 
-```{r}
+```{r, message=FALSE}
 accel = read_csv("data/accel_data.csv") 
 ```
 
 #### Tidy and wrangle the data
 
-```{r}
+```{r, message=FALSE}
 accel_tidy = accel %>%
         janitor::clean_names() %>%
         pivot_longer(activity_1:activity_1440, names_to = "minute", values_to = "activity_counts", names_prefix =  "activity_") %>%
@@ -113,29 +57,33 @@ The resulting dataset contains `r nrow(accel_tidy)` observations. `r ncol(accel_
 
 #### Create a table to show the total activity counts
 
-```{r}
+```{r, message=FALSE}
 # aggregate across minutes to create a total activity variable for each day, and create a table showing these totals
 accel_tidy %>%
         group_by(week, day) %>%
         summarize(total_activity_counts = sum(activity_counts)) %>%
-        knitr::kable()
+        knitr::kable(align = "c", format = "pipe",
+                     col.names = c("Week","Day","Total Activity Count"))
 ```
 
 We cannot observe apparent trend from the table. However, it's obvious that the total activity accounts on Saturdays in week 4 and week 5 is far lower than any other days.
 
 #### Make a single-panel plot that shows the 24-hour activity time courses for each day
 
-```{r}
+```{r, message=FALSE}
 accel_tidy %>%
         group_by(day, minute) %>%
+        rename(Day = day) %>%
         ggplot(aes(x = minute, y = activity_counts)) +
-        geom_point(aes(color = day), alpha = 0.6) +
+        geom_point(aes(color = Day), alpha = 0.6) +
         scale_color_brewer(palette = "Set1") +
         geom_smooth() + 
         scale_x_continuous(
                 breaks = c(0, 180, 360, 540, 720, 900, 1080, 1260, 1440),
                 labels = c("12am", "3am", "6am", "9am", "12pm", "3pm", "6pm", "9pm", "12am")) + 
-        labs(x = "Time", y = "Activity Counts", title = "24-hour Activity Time Courses for Each Day")
+        labs(x = "Time", 
+             y = "Activity Counts", 
+             title = "24-hour Activity Time Courses for Each Day")
 ```
 
 Within a day, we can observe that the activity count of this male is very low between 12am and 3am, and then begins to increase. Around 9am, the activity count reaches the first peak, after then it remains with little fluctuation. The second peak occurs around 9pm, after which the activity account begins to decline.
@@ -150,7 +98,7 @@ From this plot, we can roughly identify his daily schedule (such as the time of 
 
 #### Read in the data
 
-```{r}
+```{r, message=FALSE}
 data("ny_noaa")
 
 ny_noaa = 
@@ -160,39 +108,43 @@ ny_noaa =
 
 #### Tidy and wrangle the data
 
-```{r}
+```{r, message=FALSE}
 ny_noaa_tidy = ny_noaa %>%
         janitor::clean_names() %>%
         separate(date, into = c("year", "month", "day")) %>%
+        arrange(year, month) %>%
         mutate(year = as.numeric(year),
                month = month.name[as.numeric(month)],
                day = as.numeric(day)) %>%
-        mutate(prcp = as.numeric(prcp)/10,
+        mutate(prcp = prcp/10,
                tmax = as.numeric(tmax)/10,
-               tmin = as.numeric(tmin)/10)
+               tmin = as.numeric(tmin)/10) 
 
 ```
 
-`NY NOAA` collected weather data all New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations, with `r ncol(ny_noaa_tidy)` key variables, inluding `r names(ny_noaa_tidy)`. The unit for precipitation, snowfall and snow depth is unified as "mm", while the unit for maximum temperature `tmax` and minimum temperature `tmin` which maximum temperature and minimum temperature is both "degrees C". 
+`NY NOAA` collected weather data all New York state weather stations from January 1, 1981 through December 31, 2010. The tidy dataset has `r nrow(ny_noaa_tidy)` observations, with `r ncol(ny_noaa_tidy)` key variables, including `r names(ny_noaa_tidy)`. 
+
+The `id` is a `r class(ny_noaa_tidy$id)` variable. We separate the date into `year`, `month` and `day`, which are `r class(ny_noaa_tidy$year)`, `r class(ny_noaa_tidy$month)`, `r class(ny_noaa_tidy$day)` variable, respectively. `prcp`, `snow`, `snwd`, `tmax`, `tmin` are `r class(ny_noaa_tidy$prcp)` variables. The unit for precipitation, snowfall and snow depth is unified as "mm", while the unit for maximum temperature `tmax` and minimum temperature `tmin` which maximum temperature and minimum temperature is both "degrees C".
 
 Each weather station may only collect a subset of these variables, which can lead to problems with missing data in the dataset. Missing data occurs in precipitation, snowfall, snow depth, maximum temperature and minimum temperature, accounting for `r sum(is.na(ny_noaa_tidy$prcp) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snow) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$snwd) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, `r sum(is.na(ny_noaa_tidy$tmax) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)` and `r sum(is.na(ny_noaa_tidy$tmin) / nrow(ny_noaa_tidy)) %>% scales::percent(0.01)`, respectively. We cannot ignore this issue due to the large proportion. The sample is not very representative and the results of our analysis might be less convincing.
 
 
 #### Identify the most commonly observed values for snowfall
 
-```{r}
+```{r, message=FALSE}
 ny_noaa_tidy %>%
         group_by(snow) %>%
         summarize(num = n()) %>%
         arrange(desc(num))
 
 ```
+
 For snowfall, the most commonly observed value is 0. This is because snowfall is an infrequent occurrence in New York state. It does not snow for most of the time throughout the whole year due to the geographical location.
 
 
 #### Make a two-panel plot showing the average max temperature
 
-```{r}
+```{r, message=FALSE}
 # Show the average max temperature in January and in July in each station across years
 Jan_Jul = ny_noaa_tidy %>%
         filter(month %in% c("January", "July")) %>%
@@ -203,13 +155,13 @@ Jan_Jul = ny_noaa_tidy %>%
 
 Jan_Jul %>%
         ggplot(aes(x = year, y = avg_tmax)) + 
-        geom_point() + 
+        geom_point(alpha = 0.6) + 
         geom_smooth() +
         facet_grid(. ~ month) +
         labs(x = "Year",
              y = "Average Max Temperature (C)",
              title = "Average Max Temperature in January and July Across Years",
-             caption = "These data were accessed from the NOAA National Climatic Data Center.
+             caption = "Data from the rnoaa package.
              Each point represents the average max temperature of a station at the given time") +
         theme(plot.title = element_text(size = 12)) +
         theme(axis.title = element_text(size = 10)) +
@@ -225,9 +177,10 @@ In addition, outliers exist in both January and July, which are some abnormally 
 
 #### Make another two-panel plot
 
-```{r}
+```{r, message=FALSE}
 # (i) show tmax vs tmin for the full dataset
 tmax_tmin = ny_noaa_tidy %>%
+        drop_na(tmin, tmax) %>%
         ggplot(aes(x = tmin, y = tmax)) +
         geom_hex() + 
         labs(x = "Minimum Temperature (C)", 
@@ -243,10 +196,11 @@ tmax_tmin = ny_noaa_tidy %>%
 snow_dist = ny_noaa_tidy %>%
         filter(snow < 100 & snow > 0) %>%
         ggplot(aes(x = snow, y = as.factor(year))) +
-        geom_density_ridges(scale = 0.85) + 
+        geom_density_ridges(scale = 0.6) + 
         labs(x = "Snowfall Values (mm)",
              y = "Year",
-             title = "Distribution of Snowfall Values") +
+             title = "Distribution of Snowfall Values",
+             caption = "Data from the rnoaa package") +
         theme(plot.title = element_text(size = 12)) +
         theme(axis.title = element_text(size = 10)) +
         theme(axis.text = element_text(size = 10))
@@ -257,7 +211,7 @@ tmax_tmin + snow_dist
    
 ```
 
-From this 2-panel plot, we can observe that the maximal and minimal temperature may have a positive correlation and the temperature is around 0 to 25 degrees C for most of the time. The distribution of snowfall values (0-100mm) is quite similar across the years.
+From this two-panel plot, we can observe that the maximal and minimal temperature may have a positive correlation and the temperature is around 0 to 25 degrees C for most of the time. The distribution of snowfall values (0-100mm) is quite similar across the years. The snowfall values concentrate between 0 and 30mm and can reach 50-80mm under some extreme weather conditions, which is rare.
 
 
 
